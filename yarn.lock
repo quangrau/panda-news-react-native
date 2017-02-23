@@ -4068,6 +4068,10 @@ react-deep-force-update@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/react-deep-force-update/-/react-deep-force-update-1.0.1.tgz#f911b5be1d2a6fe387507dd6e9a767aa2924b4c7"
 
+react-native-browser@^0.6.2:
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/react-native-browser/-/react-native-browser-0.6.2.tgz#b3509aa9874684ae8850c3a3a521a3260ea15a0a"
+
 react-native-code-push@1.17.0-beta:
   version "1.17.0-beta"
   resolved "https://registry.yarnpkg.com/react-native-code-push/-/react-native-code-push-1.17.0-beta.tgz#a9f2ca52bceba1d8a91e65455959dd250fbb4492"

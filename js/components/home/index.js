@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { actions } from 'react-native-navigation-redux-helpers';
+import Browser from 'react-native-browser';
 import {
   Container,
   Content,
@@ -48,12 +49,19 @@ class Home extends Component {
   }
 
   getData(source, page = 1) {
-    console.log(source, page);
     this.props.getFeeds(source, page);
   }
 
   pushRoute(route, index) {
     this.props.pushRoute({ key: route, index: 1 }, this.props.navigation.key);
+  }
+
+  handleOpenBrowser(feed) {
+    if (feed && feed.source && feed.source.absoluteUrl) {
+      const url = feed.source.absoluteUrl;
+      console.log(url);
+      Browser.open(url);
+    }
   }
 
   render() {
@@ -75,6 +83,7 @@ class Home extends Component {
                     index={parseInt(i) + 1}
                     feed={feed}
                     color={source.color}
+                    onItemPress={this.handleOpenBrowser}
                   />
                 )}
               />

@@ -1,5 +1,6 @@
 import styles from './styles';
 import React, { Component, PropTypes } from 'react';
+import { TouchableOpacity } from 'react-native';
 import { Content, View, Text, Icon, ListItem, Left, Body } from 'native-base';
 import TimeAgo from 'react-native-timeago';
 
@@ -12,7 +13,12 @@ class Feed extends Component {
       meta: PropTypes.object,
       source: PropTypes.object,
     }),
+    onItemPress: PropTypes.func,
   };
+
+  handleOnPress = () => {
+    this.props.onItemPress(this.props.feed);
+  }
 
   render() {
     const { index, feed, color } = this.props;
@@ -29,11 +35,13 @@ class Feed extends Component {
           </View>
         </Left>
         <Body>
-          <Text>{feed.title}</Text>
-          <Text note>
-            <TimeAgo time={source.createdAt} />
-            {` by ${source.authorName}`}
-          </Text>
+          <TouchableOpacity onPress={this.handleOnPress}>
+            <Text>{feed.title}</Text>
+            <Text note>
+              <TimeAgo time={source.createdAt} />
+              {` by ${source.authorName}`}
+            </Text>
+          </TouchableOpacity>
         </Body>
       </ListItem>
     );
