@@ -1,34 +1,24 @@
 import styles from './styles';
+
 import React, { Component } from 'react';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, Linking } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { actions } from 'react-native-navigation-redux-helpers';
-import Browser from 'react-native-browser';
-import {
-  Container,
-  Content,
-  Text,
-  Button,
-  Icon,
-  List,
-  Left,
-  Body,
-  Right,
-  Spinner,
-} from 'native-base';
+import { Container, Content, List, Spinner } from 'native-base';
 
-import { openDrawer } from '../../actions/drawer';
 import { getFeeds } from '../../actions/feed';
+import { updateSettingFilter } from '../../actions/setting';
 
-import AppHeader from '../AppHeader';
+import FeedHeader from './header';
 import FeedItem from '../FeedItem';
+import Browser from 'react-native-browser';
 
 const {
-  pushRoute,
+  popRoute,
 } = actions;
 
-class Home extends Component {
+class Feeds extends Component {
 
   static propTypes = {
     feeds: React.PropTypes.arrayOf(React.PropTypes.object),
@@ -38,55 +28,72 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    if (this.props.source) {
-      this.getData(this.props.source.key);
-    }
+    const { source } = this.props;
+    if (source && source.key) this.getData(source.key);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.source.key !== this.props.source.key) {
-      this.getData(nextProps.source.key);
+    if (nextProps.source.key !== this.props.source.key
+      || nextProps.settings.filter !== this.props.settings.filter) {
+      this.getData(nextProps.source.key, 1, nextProps.settings.filter);
     }
   }
 
-  getData(source, page = 1) {
-    this.props.actionCreators.getFeeds(source, page, 'popular');
-  }
-
-  pushRoute(route, index) {
-    const { actionCreators, navigation } = this.props;
-    actionCreators.pushRoute({ key: route, index: 1 }, navigation.key);
+  getData(source, page = 1, filter) {
+    const { actionCreators, settings } = this.props;
+    actionCreators.getFeeds(source, page, filter || settings.filter);
   }
 
   handleOpenBrowser(feed) {
     if (feed && feed.source && feed.source.absoluteUrl) {
       const url = feed.source.absoluteUrl;
 
+      Linking.canOpenURL(url).then(supported => {
+        if (!supported) {
+          console.log('Can\'t handle url: ' + url);
+        } else {
+          return Linking.openURL(url);
+        }
+      }).catch(err => console.error('An error occurred', err));
+
       // Open browser in app
-      Browser.open(url);
+      // Browser.open(url);
     }
   }
 
+  handleBack = () => {
+    this.props.actionCreators.popRoute(this.props.navigation.key);
+  }
+
+  handleToggleFilter = () => {
+    const { actionCreators, settings } = this.props;
+    const filter = settings.filter === 'popular' ? 'latest' : 'popular';
+    actionCreators.updateSettingFilter(filter);
+  }
+
   render() {
-    const { loading, source, feeds, actionCreators } = this.props;
+    const { loading, source, feeds, settings, actionCreators } = this.props;
+    const mainColor = source.ios.color || '#000000';
 
     return (
       <Container style={styles.container}>
-        <AppHeader
-          title={source ? source.name : 'Home'}
-          onOpenDrawer={actionCreators.openDrawer}
+        <FeedHeader
+          filter={settings.filter}
+          title={source.name}
+          onBack={this.handleBack}
+          onToggleFilter={this.handleToggleFilter}
         />
         <Content>
           {loading
-            ? <Spinner color={source.color} />
+            ? <Spinner color={mainColor} />
             : <List
                 dataArray={feeds}
                 renderRow={(feed, s, i) => (
                   <FeedItem
                     index={parseInt(i) + 1}
                     feed={feed}
-                    color={source.color}
-                    onItemPress={this.handleOpenBrowser}
+                    color={mainColor}
+                    onItemPress={this.handleOpenBrowser.bind(this, feed)}
                   />
                 )}
               />
@@ -100,20 +107,22 @@ class Home extends Component {
 const bindAction = dispatch => ({
   actionCreators: bindActionCreators({
     getFeeds,
-    pushRoute,
-    openDrawer,
+    popRoute,
+    updateSettingFilter,
   }, dispatch),
 });
 
 const mapStateToProps = state => {
-  const { feeds, sources, cardNavigation } = state;
+  const { feeds, sources, settings, cardNavigation } = state;
+  const source = _.filter(sources.list, (s) => s.key === sources.selectedKey);
 
   return {
+    settings,
     loading: feeds.loading,
     feeds: feeds.data,
-    source: sources.list[sources.selectedIndex],
+    source: source[0],
     navigation: cardNavigation,
   };
 };
 
-export default connect(mapStateToProps, bindAction)(Home);
+export default connect(mapStateToProps, bindAction)(Feeds);

@@ -7,7 +7,7 @@ import { actions } from 'react-native-navigation-redux-helpers';
 import { closeDrawer } from './actions/drawer';
 
 import Home from './components/Home/';
-import BlankPage from './components/BlankPage';
+import Feeds from './components/Feeds';
 import SplashPage from './components/SplashScreen/';
 import SideBar from './components/SideBar';
 import { statusBarColor } from './themes/base-theme';
@@ -75,8 +75,8 @@ class AppNavigator extends Component {
         return <SplashPage />;
       case 'home':
         return <Home />;
-      case 'blankPage':
-        return <BlankPage />;
+      case 'feeds':
+        return <Feeds />;
       default :
         return <Home />;
     }

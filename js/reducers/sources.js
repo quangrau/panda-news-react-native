@@ -1,5 +1,5 @@
 import {
-  SET_INDEX,
+  SELECT_SOURCE,
   FETCH_SOURCES,
   FETCH_SOURCES_PENDING,
   FETCH_SOURCES_REJECTED,
@@ -7,17 +7,17 @@ import {
 } from '../actions/source';
 
 const initialState = {
-  selectedIndex: 0,
+  selectedKey: null,
   loading: false,
   list: [],
 };
 
 export default function (state = initialState, action) {
   switch (action.type) {
-    case SET_INDEX:
+    case SELECT_SOURCE:
       return {
         ...state,
-        selectedIndex: action.payload,
+        selectedKey: action.payload,
       };
 
     case FETCH_SOURCES_PENDING:

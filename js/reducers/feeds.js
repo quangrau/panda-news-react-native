@@ -11,8 +11,6 @@ export type State = {
 
 const initialState = {
   page: 1,
-  limit: 30,
-  sort: 'popular',
   loading: false,
   data: [],
 };

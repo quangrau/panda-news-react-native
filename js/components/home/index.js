@@ -15,10 +15,10 @@ import {
   Spinner,
 } from 'native-base';
 
-import { setIndex, getSources } from '../../actions/source';
+import { selectSource, getSources } from '../../actions/source';
 import navigateTo from '../../actions/sideBarNav';
 
-import HomeHeader from '../HomeHeader';
+import HomeHeader from './header';
 import SourceItem from '../SourceItem';
 
 const {
@@ -35,19 +35,16 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.sources) {
+    if (_.isEmpty(this.props.sources)) {
       this.props.actionCreators.getSources();
     }
   }
 
-  pushRoute(route, index) {
+  handleSelectSource(index) {
     const { actionCreators, navigation } = this.props;
-    actionCreators.pushRoute({ key: route, index: 1 }, navigation.key);
-  }
 
-  changeSource(index) {
-    this.props.actionCreators.setIndex(index);
-    this.props.actionCreators.navigateTo('home', 'home');
+    actionCreators.selectSource(index);
+    actionCreators.pushRoute({ key: 'feeds', index: 1 }, navigation.key);
   }
 
   render() {
@@ -65,10 +62,11 @@ class Home extends Component {
             ? <Spinner />
             : <List
                 dataArray={dataSources}
-                renderRow={(source) => (
+                renderRow={(source, s, i) => (
                   <SourceItem
+                    key={i}
                     source={source}
-                    onItemPress={this.changeSource}
+                    onItemPress={this.handleSelectSource.bind(this, source.key)}
                   />
                 )}
               />
@@ -81,6 +79,7 @@ class Home extends Component {
 
 const bindAction = dispatch => ({
   actionCreators: bindActionCreators({
+    selectSource,
     getSources,
     pushRoute,
   }, dispatch),

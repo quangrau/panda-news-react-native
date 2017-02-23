@@ -1,16 +1,15 @@
-import type { Action } from './types';
 import { fetchSources } from '../api';
 
-export const SET_INDEX = 'SET_INDEX';
+export const SELECT_SOURCE = 'SELECT_SOURCE';
 export const FETCH_SOURCES = 'FETCH_SOURCES';
 export const FETCH_SOURCES_PENDING = 'FETCH_SOURCES_PENDING';
 export const FETCH_SOURCES_FULFILLED = 'FETCH_SOURCES_FULFILLED';
 export const FETCH_SOURCES_REJECTED = 'FETCH_SOURCES_REJECTED';
 
-export function setIndex(index:number):Action {
+export function selectSource(key) {
   return {
-    type: SET_INDEX,
-    payload: index,
+    type: SELECT_SOURCE,
+    payload: key,
   };
 }
 

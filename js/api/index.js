@@ -1,8 +1,6 @@
-export const fetchFeeds = (source, page = 1, sort = 'latest') => {
-  console.log(sort);
+export const fetchFeeds = (source, page = 1, filter = 'popular', limit = 30) => {
   const endpoint = `https://cdnapi.pnd.gs/v2/feeds`;
-
-  return fetch(`${endpoint}?limit=30&page=${page}&sort=${sort}&sources=${source}`)
+  return fetch(`${endpoint}?limit=${limit}&page=${page}&sort=${filter}&sources=${source}`)
     .then((response) => response.json());
 }
 

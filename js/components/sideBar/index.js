@@ -18,26 +18,17 @@ class SideBar extends Component {
     }),
   }
 
-  componentDidMount() {
-    if (!this.props.list.length) {
-      this.props.actionCreators.getSources();
-    }
-  }
-
-  changeSource(index) {
-    this.props.actionCreators.setIndex(index);
-    this.props.actionCreators.navigateTo('home', 'home');
-  }
-
   render() {
     return (
       <Content style={styles.sidebar} >
-        <List
-          dataArray={this.props.list}
-          renderRow={(source) => (
-            <SourceItem source={source} onItemPress={this.changeSource} />
-          )}
-        />
+        <List>
+          <ListItem button>
+            <Text>Home</Text>
+          </ListItem>
+          <ListItem button>
+            <Text>Blank Page</Text>
+          </ListItem>
+        </List>
       </Content>
     );
   }
