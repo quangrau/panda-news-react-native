@@ -1,4 +1,4 @@
-package com.nativestarterkit;
+package com.pandanews;
 
 import com.facebook.react.ReactActivity;
 

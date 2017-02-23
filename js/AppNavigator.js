@@ -53,7 +53,7 @@ class AppNavigator extends Component {
     }
 
     if (this.props.drawerState === 'closed') {
-      this._drawer.close();
+      this._drawer._root.close();
     }
   }
 
@@ -62,7 +62,7 @@ class AppNavigator extends Component {
   }
 
   openDrawer() {
-    this._drawer.open();
+    this._drawer._root.open();
   }
 
   closeDrawer() {
@@ -75,14 +75,12 @@ class AppNavigator extends Component {
     switch (props.scene.route.key) {
       case 'splashscreen':
         return <SplashPage />;
-      case 'login':
-        return <Login />;
       case 'home':
         return <Home />;
       case 'blankPage':
         return <BlankPage />;
       default :
-        return <Login />;
+        return <Home />;
     }
   }
 

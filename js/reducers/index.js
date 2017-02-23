@@ -1,16 +1,13 @@
-
 import { combineReducers } from 'redux';
 
 import drawer from './drawer';
 import cardNavigation from './cardNavigation';
-import user from './user';
-import list from './list';
+import sources from './sources';
+import feeds from './feeds';
 
 export default combineReducers({
-
+  feeds,
   drawer,
-  user,
-  list,
+  sources,
   cardNavigation,
-
 });

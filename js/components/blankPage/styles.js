@@ -1,10 +1,5 @@
-
-const React = require('react-native');
-
-const { StyleSheet } = React;
-
-module.exports = StyleSheet.create({
+module.exports = {
   container: {
     backgroundColor: '#FBFAFA',
   },
-});
+};

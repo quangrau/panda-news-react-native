@@ -1,67 +1,84 @@
-
+import styles from './styles';
 import React, { Component } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { actions } from 'react-native-navigation-redux-helpers';
-import { Container, Header, Title, Content, Text, Button, Icon } from 'native-base';
-import { Grid, Row } from 'react-native-easy-grid';
+import {
+  Container,
+  Content,
+  Text,
+  Button,
+  Icon,
+  List,
+  Left,
+  Body,
+  Right,
+  Spinner,
+} from 'native-base';
 
 import { openDrawer } from '../../actions/drawer';
-import { setIndex } from '../../actions/list';
-import styles from './styles';
+import { getFeeds } from '../../actions/feeds';
+
+import AppHeader from '../appHeader';
+import FeedItem from '../feed';
 
 const {
-  reset,
   pushRoute,
 } = actions;
 
 class Home extends Component {
 
   static propTypes = {
-    name: React.PropTypes.string,
-    list: React.PropTypes.arrayOf(React.PropTypes.string),
-    setIndex: React.PropTypes.func,
+    feeds: React.PropTypes.arrayOf(React.PropTypes.object),
     openDrawer: React.PropTypes.func,
     pushRoute: React.PropTypes.func,
-    reset: React.PropTypes.func,
     navigation: React.PropTypes.shape({
       key: React.PropTypes.string,
     }),
   }
 
+  componentDidMount() {
+    this.getData(this.props.source.key);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.source.key !== this.props.source.key) {
+      this.getData(nextProps.source.key);
+    }
+  }
+
+  getData(source, page = 1) {
+    console.log(source, page);
+    this.props.getFeeds(source, page);
+  }
+
   pushRoute(route, index) {
-    this.props.setIndex(index);
     this.props.pushRoute({ key: route, index: 1 }, this.props.navigation.key);
   }
 
   render() {
+    const { loading, source, feeds } = this.props;
+
     return (
       <Container style={styles.container}>
-        <Header>
-          <Button transparent onPress={() => this.props.reset(this.props.navigation.key)}>
-            <Icon name="ios-power" />
-          </Button>
-
-          <Title>{(this.props.name) ? this.props.name : 'Home'}</Title>
-
-          <Button transparent onPress={this.props.openDrawer}>
-            <Icon name="ios-menu" />
-          </Button>
-        </Header>
-
+        <AppHeader
+          title={source.name}
+          onOpenDrawer={this.props.openDrawer}
+        />
         <Content>
-          <Grid style={styles.mt}>
-            {this.props.list.map((item, i) =>
-              <Row key={i}>
-                <TouchableOpacity
-                  style={styles.row}
-                  onPress={() => this.pushRoute('blankPage', i)}
-                >
-                  <Text style={styles.text}>{item}</Text>
-                </TouchableOpacity>
-              </Row>
-            )}
-          </Grid>
+          {loading
+            ? <Spinner color={source.color} />
+            : <List
+                dataArray={feeds}
+                renderRow={(feed, s, i) => (
+                  <FeedItem
+                    index={parseInt(i) + 1}
+                    feed={feed}
+                    color={source.color}
+                  />
+                )}
+              />
+          }
         </Content>
       </Container>
     );
@@ -70,17 +87,21 @@ class Home extends Component {
 
 function bindAction(dispatch) {
   return {
-    setIndex: index => dispatch(setIndex(index)),
     openDrawer: () => dispatch(openDrawer()),
     pushRoute: (route, key) => dispatch(pushRoute(route, key)),
-    reset: key => dispatch(reset([{ key: 'login' }], key, 0)),
+    getFeeds: (source, page) => dispatch(getFeeds(source, page)),
   };
 }
 
-const mapStateToProps = state => ({
-  name: state.user.name,
-  list: state.list.list,
-  navigation: state.cardNavigation,
-});
+const mapStateToProps = state => {
+  const { feeds, sources, cardNavigation } = state;
+
+  return {
+    loading: feeds.loading,
+    feeds: feeds.data,
+    source: sources.list[sources.selectedIndex],
+    navigation: cardNavigation,
+  };
+};
 
 export default connect(mapStateToProps, bindAction)(Home);
