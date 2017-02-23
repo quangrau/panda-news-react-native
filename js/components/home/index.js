@@ -6,7 +6,6 @@ import { TouchableOpacity } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { actions } from 'react-native-navigation-redux-helpers';
-import Browser from 'react-native-browser';
 import {
   Container,
   Content,

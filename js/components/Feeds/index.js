@@ -12,7 +12,6 @@ import { updateSettingFilter } from '../../actions/setting';
 
 import FeedHeader from './header';
 import FeedItem from '../FeedItem';
-import Browser from 'react-native-browser';
 
 const {
   popRoute,
@@ -48,6 +47,7 @@ class Feeds extends Component {
     if (feed && feed.source && feed.source.absoluteUrl) {
       const url = feed.source.absoluteUrl;
 
+      // Opening external links
       Linking.canOpenURL(url).then(supported => {
         if (!supported) {
           console.log('Can\'t handle url: ' + url);
@@ -55,9 +55,6 @@ class Feeds extends Component {
           return Linking.openURL(url);
         }
       }).catch(err => console.error('An error occurred', err));
-
-      // Open browser in app
-      // Browser.open(url);
     }
   }
 
