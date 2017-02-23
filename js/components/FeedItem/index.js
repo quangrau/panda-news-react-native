@@ -4,7 +4,7 @@ import { TouchableOpacity } from 'react-native';
 import { Content, View, Text, Icon, ListItem, Left, Body } from 'native-base';
 import TimeAgo from 'react-native-timeago';
 
-class Feed extends Component {
+class FeedItem extends Component {
 
   static propTypes = {
     feed: PropTypes.shape({
@@ -48,4 +48,4 @@ class Feed extends Component {
   }
 }
 
-export default Feed;
+export default FeedItem;

@@ -1,11 +1,9 @@
-
+import styles from './styles';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { actions } from 'react-native-navigation-redux-helpers';
 import { Container, Header, Title, Content, Text, Button, Icon } from 'native-base';
-
 import { openDrawer } from '../../actions/drawer';
-import styles from './styles';
 
 const {
   popRoute,

@@ -1,22 +1,32 @@
-import styles from './style';
-import React, { Component } from 'react';
+import styles from './styles';
+import React, { Component, PropTypes } from 'react';
+
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Content, Text, List, ListItem } from 'native-base';
 
-import { setIndex } from '../../actions/source';
+import { setIndex, getSources } from '../../actions/source';
 import navigateTo from '../../actions/sideBarNav';
-import myTheme from '../../themes/base-theme';
+import SourceItem from '../SourceItem';
 
 class SideBar extends Component {
 
   static propTypes = {
-    setIndex: React.PropTypes.func,
-    navigateTo: React.PropTypes.func,
+    actionCreators: PropTypes.shape({
+      setIndex: PropTypes.func,
+      navigateTo: PropTypes.func,
+    }),
+  }
+
+  componentDidMount() {
+    if (!this.props.list.length) {
+      this.props.actionCreators.getSources();
+    }
   }
 
   changeSource(index) {
-    this.props.setIndex(index);
-    this.props.navigateTo('home', 'home');
+    this.props.actionCreators.setIndex(index);
+    this.props.actionCreators.navigateTo('home', 'home');
   }
 
   render() {
@@ -24,13 +34,8 @@ class SideBar extends Component {
       <Content style={styles.sidebar} >
         <List
           dataArray={this.props.list}
-          renderRow={(source, s, i) => (
-            <ListItem
-              button
-              onPress={this.changeSource.bind(this, i)}
-            >
-              <Text>{source.name}</Text>
-            </ListItem>
+          renderRow={(source) => (
+            <SourceItem source={source} onItemPress={this.changeSource} />
           )}
         />
       </Content>
@@ -38,12 +43,13 @@ class SideBar extends Component {
   }
 }
 
-function bindAction(dispatch) {
-  return {
-    setIndex: index => dispatch(setIndex(index)),
-    navigateTo: (route, homeRoute) => dispatch(navigateTo(route, homeRoute)),
-  };
-}
+const bindAction = dispatch => ({
+  actionCreators: bindActionCreators({
+    setIndex,
+    getSources,
+    navigateTo,
+  }, dispatch),
+});
 
 const mapStateToProps = state => ({
   list: state.sources.list,

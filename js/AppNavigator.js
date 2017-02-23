@@ -4,14 +4,12 @@ import { BackAndroid, StatusBar, NavigationExperimental } from 'react-native';
 import { connect } from 'react-redux';
 import { Drawer } from 'native-base';
 import { actions } from 'react-native-navigation-redux-helpers';
-
 import { closeDrawer } from './actions/drawer';
 
-import Login from './components/login/';
-import Home from './components/home/';
-import BlankPage from './components/blankPage';
-import SplashPage from './components/splashscreen/';
-import SideBar from './components/sideBar';
+import Home from './components/Home/';
+import BlankPage from './components/BlankPage';
+import SplashPage from './components/SplashScreen/';
+import SideBar from './components/SideBar';
 import { statusBarColor } from './themes/base-theme';
 
 const {
@@ -38,7 +36,7 @@ class AppNavigator extends Component {
     BackAndroid.addEventListener('hardwareBackPress', () => {
       const routes = this.props.navigation.routes;
 
-      if (routes[routes.length - 1].key === 'home' || routes[routes.length - 1].key === 'login') {
+      if (routes[routes.length - 1].key === 'home') {
         return false;
       }
 

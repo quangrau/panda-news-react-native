@@ -1,42 +1,45 @@
-
-import type { Action } from '../actions/types';
-import { SET_INDEX } from '../actions/source';
-
-export type State = {
-  list: string
-}
+import {
+  SET_INDEX,
+  FETCH_SOURCES,
+  FETCH_SOURCES_PENDING,
+  FETCH_SOURCES_REJECTED,
+  FETCH_SOURCES_FULFILLED,
+} from '../actions/source';
 
 const initialState = {
   selectedIndex: 0,
-  list: [{
-    name: 'Product Hunt',
-    key: 'productHunt',
-    color: '#dc5425',
-    icon: 'https://usepanda.com/img/source-icons/productHunt.png',
-  }, {
-    name: 'The Next Web',
-    key: 'theNextWeb',
-    color: '#db232c',
-    icon: 'https://usepanda.com/img/source-icons/theNextWeb.png',
-  }, {
-    name: 'Hacker News',
-    key: 'hackerNews',
-    color: '#ff6500',
-    icon: 'https://usepanda.com/img/source-icons/hackerNews.png',
-  }, {
-    name: 'Front-end Front',
-    key: 'frontEndFront',
-    color: '#2DBF80',
-    icon: 'http://usepanda.com/img/source-icons/frontendfront.png',
-  }],
+  loading: false,
+  list: [],
 };
 
-export default function (state:State = initialState, action:Action): State {
-  if (action.type === SET_INDEX) {
-    return {
-      ...state,
-      selectedIndex: action.payload,
-    };
+export default function (state = initialState, action) {
+  switch (action.type) {
+    case SET_INDEX:
+      return {
+        ...state,
+        selectedIndex: action.payload,
+      };
+
+    case FETCH_SOURCES_PENDING:
+      return {
+        ...state,
+        loading: true,
+      };
+
+    case FETCH_SOURCES_FULFILLED:
+      return {
+        ...state,
+        loading: false,
+        list: action.payload,
+      };
+
+    case FETCH_SOURCES_REJECTED:
+      return {
+        ...state,
+        loading: false,
+      };
+
+    default:
+      return state;
   }
-  return state;
 }

@@ -5,10 +5,10 @@ export const FETCH_FEEDS_PENDING = 'FETCH_FEEDS_PENDING';
 export const FETCH_FEEDS_FULFILLED = 'FETCH_FEEDS_FULFILLED';
 export const FETCH_FEEDS_REJECTED = 'FETCH_FEEDS_REJECTED';
 
-export function getFeeds(source:string, page:number) {
+export function getFeeds(source:string, page:number, sort:string) {
   return {
     type: FETCH_FEEDS,
-    payload: fetchFeeds(source, page),
+    payload: fetchFeeds(source, page, sort),
   };
 }
 

@@ -3,7 +3,7 @@ import {
   FETCH_FEEDS_PENDING,
   FETCH_FEEDS_FULFILLED,
   FETCH_FEEDS_REJECTED,
-} from '../actions/feeds';
+} from '../actions/feed';
 
 export type State = {
   feeds: array,

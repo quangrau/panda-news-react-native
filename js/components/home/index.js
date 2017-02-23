@@ -1,27 +1,25 @@
 import styles from './styles';
+
+import _ from 'lodash';
 import React, { Component } from 'react';
 import { TouchableOpacity } from 'react-native';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { actions } from 'react-native-navigation-redux-helpers';
 import Browser from 'react-native-browser';
 import {
   Container,
   Content,
-  Text,
-  Button,
   Icon,
   List,
-  Left,
-  Body,
-  Right,
   Spinner,
 } from 'native-base';
 
-import { openDrawer } from '../../actions/drawer';
-import { getFeeds } from '../../actions/feeds';
+import { setIndex, getSources } from '../../actions/source';
+import navigateTo from '../../actions/sideBarNav';
 
-import AppHeader from '../appHeader';
-import FeedItem from '../feed';
+import HomeHeader from '../HomeHeader';
+import SourceItem from '../SourceItem';
 
 const {
   pushRoute,
@@ -31,59 +29,46 @@ class Home extends Component {
 
   static propTypes = {
     feeds: React.PropTypes.arrayOf(React.PropTypes.object),
-    openDrawer: React.PropTypes.func,
-    pushRoute: React.PropTypes.func,
     navigation: React.PropTypes.shape({
       key: React.PropTypes.string,
     }),
   }
 
   componentDidMount() {
-    this.getData(this.props.source.key);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.source.key !== this.props.source.key) {
-      this.getData(nextProps.source.key);
+    if (!this.props.sources) {
+      this.props.actionCreators.getSources();
     }
-  }
-
-  getData(source, page = 1) {
-    this.props.getFeeds(source, page);
   }
 
   pushRoute(route, index) {
-    this.props.pushRoute({ key: route, index: 1 }, this.props.navigation.key);
+    const { actionCreators, navigation } = this.props;
+    actionCreators.pushRoute({ key: route, index: 1 }, navigation.key);
   }
 
-  handleOpenBrowser(feed) {
-    if (feed && feed.source && feed.source.absoluteUrl) {
-      const url = feed.source.absoluteUrl;
-      console.log(url);
-      Browser.open(url);
-    }
+  changeSource(index) {
+    this.props.actionCreators.setIndex(index);
+    this.props.actionCreators.navigateTo('home', 'home');
   }
 
   render() {
-    const { loading, source, feeds } = this.props;
+    const { loading, sources } = this.props;
+    const dataSources = _(sources)
+      .filter(source => source.stats.popularity)
+      .orderBy(source => source.stats.popularity, 'desc')
+      .value();
 
     return (
       <Container style={styles.container}>
-        <AppHeader
-          title={source.name}
-          onOpenDrawer={this.props.openDrawer}
-        />
+        <HomeHeader title="Panda News" />
         <Content>
           {loading
-            ? <Spinner color={source.color} />
+            ? <Spinner />
             : <List
-                dataArray={feeds}
-                renderRow={(feed, s, i) => (
-                  <FeedItem
-                    index={parseInt(i) + 1}
-                    feed={feed}
-                    color={source.color}
-                    onItemPress={this.handleOpenBrowser}
+                dataArray={dataSources}
+                renderRow={(source) => (
+                  <SourceItem
+                    source={source}
+                    onItemPress={this.changeSource}
                   />
                 )}
               />
@@ -94,21 +79,19 @@ class Home extends Component {
   }
 }
 
-function bindAction(dispatch) {
-  return {
-    openDrawer: () => dispatch(openDrawer()),
-    pushRoute: (route, key) => dispatch(pushRoute(route, key)),
-    getFeeds: (source, page) => dispatch(getFeeds(source, page)),
-  };
-}
+const bindAction = dispatch => ({
+  actionCreators: bindActionCreators({
+    getSources,
+    pushRoute,
+  }, dispatch),
+});
 
 const mapStateToProps = state => {
-  const { feeds, sources, cardNavigation } = state;
+  const { sources, cardNavigation } = state;
 
   return {
-    loading: feeds.loading,
-    feeds: feeds.data,
-    source: sources.list[sources.selectedIndex],
+    loading: sources.loading,
+    sources: sources.list,
     navigation: cardNavigation,
   };
 };
