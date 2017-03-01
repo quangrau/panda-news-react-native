@@ -3,7 +3,7 @@ import React, { Component, PropTypes } from 'react';
 import TimeAgo from 'react-native-timeago';
 
 import { TouchableOpacity } from 'react-native';
-import { Content, View, Text, Icon, ListItem, Left, Body } from 'native-base';
+import { View, Text, Icon, ListItem, Left, Body } from 'native-base';
 
 const FeedItem = (props) => {
 
@@ -41,6 +41,13 @@ FeedItem.propTypes = {
     source: PropTypes.object,
   }),
   onItemPress: PropTypes.func,
+  index: PropTypes.number,
+  color: PropTypes.string,
 };
+
+FeedItem.defaultProps = {
+  index: 1,
+  color: '#000000',
+}
 
 export default FeedItem;

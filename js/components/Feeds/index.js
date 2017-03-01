@@ -1,17 +1,18 @@
 import styles from './styles';
 
 import React, { Component } from 'react';
-import { TouchableOpacity, Linking } from 'react-native';
+import { TouchableOpacity, Linking, Dimensions } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { actions } from 'react-native-navigation-redux-helpers';
-import { Container, Content, List, Spinner } from 'native-base';
+import { Container, Content, List, Card, Spinner } from 'native-base';
 
 import { getFeeds } from '../../actions/feed';
 import { updateSettingFilter } from '../../actions/setting';
 
 import FeedHeader from './header';
 import FeedItem from '../FeedItem';
+import FeedCard from '../FeedCard';
 
 const {
   popRoute,
@@ -34,13 +35,20 @@ class Feeds extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.source.key !== this.props.source.key
       || nextProps.settings.filter !== this.props.settings.filter) {
-      this.getData(nextProps.source.key, 1, nextProps.settings.filter);
+      this.getData(nextProps.source.key, nextProps.settings.filter);
     }
   }
 
-  getData(source, page = 1, filter) {
-    const { actionCreators, settings } = this.props;
-    actionCreators.getFeeds(source, page, filter || settings.filter);
+  getData(key, filter) {
+    const { actionCreators, page, source, settings } = this.props;
+
+    // Init params
+    const sourceKey = key || source.key;
+    const filterType = filter || settings.filter;
+    const nextPage = page + 1;
+
+    // Fetch
+    actionCreators.getFeeds(sourceKey, nextPage, filterType);
   }
 
   handleOpenBrowser(feed) {
@@ -68,6 +76,53 @@ class Feeds extends Component {
     actionCreators.updateSettingFilter(filter);
   }
 
+  handleOnScroll = (e) => {
+    const windowHeight = Dimensions.get('window').height;
+    const offset = e.nativeEvent.contentOffset.y;
+    const height = e.nativeEvent.contentSize.height;
+
+    if ((windowHeight + offset > height + 30) && this.props.canLoadMore) {
+      this.getData();
+    }
+  }
+
+  renderNewsFeed() {
+    const { feeds, source } = this.props;
+
+    return (
+      <List
+        dataArray={feeds}
+        renderRow={(feed, s, i) => (
+          <FeedItem
+            index={parseInt(i) + 1}
+            feed={feed}
+            color={source.ios.color}
+            onItemPress={this.handleOpenBrowser.bind(this, feed)}
+          />
+        )}
+      />
+    );
+  }
+
+  renderDesignFeed() {
+    return this.props.feeds.map((feed, i) => (
+      <FeedCard
+        key={i}
+        feed={feed}
+        onItemPress={this.handleOpenBrowser.bind(this, feed)}
+      />
+    ));
+  }
+
+  renderFeedItems() {
+    switch (this.props.source.type) {
+      case 'news':
+        return this.renderNewsFeed();
+      default:
+        return this.renderDesignFeed();
+    }
+  }
+
   render() {
     const { loading, source, feeds, settings, actionCreators } = this.props;
     const mainColor = source.ios.color || '#000000';
@@ -77,24 +132,16 @@ class Feeds extends Component {
         <FeedHeader
           filter={settings.filter}
           title={source.name}
+          color={mainColor}
           onBack={this.handleBack}
           onToggleFilter={this.handleToggleFilter}
         />
-        <Content>
-          {loading
-            ? <Spinner color={mainColor} />
-            : <List
-                dataArray={feeds}
-                renderRow={(feed, s, i) => (
-                  <FeedItem
-                    index={parseInt(i) + 1}
-                    feed={feed}
-                    color={mainColor}
-                    onItemPress={this.handleOpenBrowser.bind(this, feed)}
-                  />
-                )}
-              />
-          }
+        <Content
+          scrollEventThrottle={1000}
+          onScroll={this.handleOnScroll}
+        >
+          {this.renderFeedItems()}
+          {loading && <Spinner color={mainColor} />}
         </Content>
       </Container>
     );
@@ -111,12 +158,15 @@ const bindAction = dispatch => ({
 
 const mapStateToProps = state => {
   const { feeds, sources, settings, cardNavigation } = state;
+  const { page, loading, canLoadMore, data } = feeds;
   const source = _.filter(sources.list, (s) => s.key === sources.selectedKey);
 
   return {
+    page,
+    loading,
     settings,
-    loading: feeds.loading,
-    feeds: feeds.data,
+    canLoadMore,
+    feeds: data,
     source: source[0],
     navigation: cardNavigation,
   };

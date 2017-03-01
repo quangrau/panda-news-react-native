@@ -4095,6 +4095,10 @@ react-native-easy-grid@0.1.8:
   dependencies:
     lodash "^4.11.1"
 
+react-native-fabric@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/react-native-fabric/-/react-native-fabric-0.4.1.tgz#5fcb604daf17d0dff70603ff3eeba9e3f3160ddd"
+
 react-native-keyboard-aware-scroll-view@0.2.7:
   version "0.2.7"
   resolved "https://registry.yarnpkg.com/react-native-keyboard-aware-scroll-view/-/react-native-keyboard-aware-scroll-view-0.2.7.tgz#dd344cec25284b6314f1cc9d1b75ba267483c6b6"

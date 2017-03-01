@@ -4,15 +4,15 @@ import { Header, Left, Body, Right, Title, Button, Icon } from 'native-base';
 const HomeHeader = (props) => {
   return (
     <Header>
-      <Left />
+      <Left>
+        <Button transparent>
+          <Icon name="menu" />
+        </Button>
+      </Left>
       <Body>
         <Title>{props.title}</Title>
       </Body>
-      <Right>
-        <Button transparent>
-          <Icon name="settings" />
-        </Button>
-      </Right>
+      <Right />
     </Header>
   );
 };

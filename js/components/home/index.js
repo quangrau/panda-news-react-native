@@ -58,7 +58,7 @@ class Home extends Component {
         <HomeHeader title="Panda News" />
         <Content>
           {loading
-            ? <Spinner />
+            ? <Spinner color="#000000" />
             : <List
                 dataArray={dataSources}
                 renderRow={(source, s, i) => (
