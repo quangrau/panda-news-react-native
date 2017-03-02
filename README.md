@@ -12,7 +12,7 @@
 
 ## Screens
 
- ![ios-home](/Screenshots/iOS/home.png =300x533)
+ <img src="/Screenshots/iOS/home.png" width=300 />
  ![ios-feeds](/Screenshots/iOS/feeds.png =300x533)
 
 ## Technologies
