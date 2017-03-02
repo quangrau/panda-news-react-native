@@ -12,7 +12,8 @@
 
 ## Screens
 
- ![ios-demo](/Screenshots/iOS/demo.gif)
+ ![ios-home](/Screenshots/iOS/home.PNG)
+ ![ios-feeds](/Screenshots/iOS/feeds.PNG)
 
 ## Technologies
 *Technologies used in Native Starter Kit*
