@@ -112,9 +112,9 @@ This is a [React Native](https://github.com/facebook/react-native) Project with 
 On the command prompt run the following commands
 
 ```sh
-$ git clone https://github.com/start-react/native-starter-kit.git
+$ git clone https://github.com/quangrau/panda-news-react-native.git
 
-$ cd native-starter-kit/
+$ cd panda-news-react-native/
 
 $ npm install
 ```
