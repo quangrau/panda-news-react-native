@@ -13,7 +13,8 @@
 ## Screens
 
 <img src="/Screenshots/iOS/home.png" width=300 />
-<img src="/Screenshots/iOS/feed.png" width=300 />
+<img src="/Screenshots/iOS/feed-list.png" width=300 />
+<img src="/Screenshots/iOS/feed-card.png" width=300 />
 
 ## Technologies
 *Technologies used in Native Starter Kit*
