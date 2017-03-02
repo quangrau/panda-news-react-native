@@ -12,8 +12,9 @@
 
 ## Screens
 
- ![ios-home](/Screenshots/iOS/home.PNG)
- ![ios-feeds](/Screenshots/iOS/feeds.PNG)
+ ![ios-home](/Screenshots/iOS/home.png)
+
+ ![ios-feeds](/Screenshots/iOS/feeds.png)
 
 ## Technologies
 *Technologies used in Native Starter Kit*
